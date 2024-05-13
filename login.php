@@ -8,7 +8,7 @@ $con=new database();
 if(isset($_POST['login'])) {
 $username=$_POST['username'];
 $password=$_POST['password'];
-$result=$con->check($username, $password, $firstname, $lastname, $birthday, $sex);
+$result=$con->check($username, $password);
 if ($result){
     if ($result['Username'] == $_POST['username'] && $result['Pass_word'] == $_POST['password']){
         $_SESSION['username']=$result['Username'];
