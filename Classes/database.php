@@ -44,7 +44,7 @@ return  $con->query($query)->fetch();
        function insertAddress($UserID, $street, $barangay, $city, $province) {
         $con = $this->opencon();
 
-        return $con->prepare("INSERT INTO  user_address (UserID,user_add_street, user_add_barangay,user_add_city, user_add_province) 
+        return $con->prepare("INSERT INTO  user_address (UserID, user_add_street, user_add_barangay,user_add_city, user_add_province) 
         VALUES (?, ?, ?, ?, ?)")->execute([$UserID, $street, $barangay, $city, $province]);
 
 
@@ -65,18 +65,55 @@ return  $con->query($query)->fetch();
             $query = $con->prepare("DELETE FROM users WHERE UserID = ?");
             $query->execute([$id]);
 
-
-
-
-
             $con->commit();
             return true;
           }  catch (PDOException $e) {
             $con->rollBack();
             return false;
           } 
-    }
-}     
+        }
 
-        
+          function viewdata($id){
+              try{
+                
+                  $con = $this->opencon();
+                  $query = $con->prepare("SELECT users.UserID, users.firstname, users.lastname, users.birthday, users.sex, 
+                  users.Username, users.Pass_word,user_address.user_add_street,
+                   user_address.user_add_barangay, user_address.user_add_city, user_address.user_add_province 
+                   FROM users INNER JOIN user_address ON users.UserID = user_address.UserID; WHERE users.UserID = ? ");
+                  $query->execute([$id]);
+                  return $query->fetch();
+
+              } catch (PDOException $e) {
+                return [];
+              }
+          }
+                function updateUser($user_id, $firstname, $lastname, $birthday, $sex, $Username, $Pass_word){
+                 try{
+                       $con = $this->opencon();
+                       $query = $con->beginTransaction();
+                       $query = $con->prepare("UPDATE users SET firstname=?, lastname=?, birthday=?, sex?, username=?, user_pass=?, WHERE UserID=? ");
+
+                       $query->execute([$firstname, $lastname,$birthday, $sex, $Username, $Pass_word, $user_id]);
+                       $con->commit();
+                }    catch (PDOException $e){
+                    $con->rollBack();
+                    return false;  
+                }
+              } 
+              function updateUserAddress($user_id, $street, $barangay, $city, $province,){
+                try{
+                      $con = $this->opencon();
+                      $query = $con->beginTransaction();
+                      $query = $con->prepare("UPDATE user_address=? SET user_street=?, user_barangay=?, user_province=?,WHERE UserID=? ");
+
+                      $query->execute([$user_id, $street,$barangay, $city, $province]);
+                      $con->commit();
+               }    catch (PDOException $e){
+                   $con->rollBack();
+                   return false;  
+
+}
+}
+}
     

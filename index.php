@@ -12,19 +12,6 @@ if (isset($_POST['delete'])) {
 }
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,20 +60,21 @@ if (isset($_POST['delete'])) {
           <td><?php echo $rows['Username']; ?></td>
           <td><?php echo ucwords($rows['address']);  ?></td>
           <td>
-            
-          <a href="#" class="btn btn-primary btn-sm">Edit</a>
-        <!-- Delete button -->
+<!-- Update Button -->
+<form action="update.php" method ="POST" style="display: inline;">
+            <input type="hidden" name="id" value="<?php echo $rows ['UserID'];?>">
+            <input type="submit" value="update" class="btn btn-primary btn-sm">
+        </form>
+
+<!-- Delete button -->
         <form method="POST" style="display: inline;">
             <input type="hidden" name="id" value="<?php echo $rows['UserID']; ?>">
             <input type="submit" name="delete" class="btn btn-danger btn-sm" value="Delete" 
             onclick="return confirm('Are you sure you want to delete this user?')">
-
         </form>
           </td>
         </tr>
-
-       <?php
-      }
+       <?php }
         ?>
 
 
