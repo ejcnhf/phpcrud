@@ -80,7 +80,7 @@ return  $con->query($query)->fetch();
                   $query = $con->prepare("SELECT users.UserID, users.firstname, users.lastname, users.birthday, users.sex, 
                   users.Username, users.Pass_word,user_address.user_add_street,
                    user_address.user_add_barangay, user_address.user_add_city, user_address.user_add_province 
-                   FROM users INNER JOIN user_address ON users.UserID = user_address.UserID; WHERE users.UserID = ? ");
+                   FROM users INNER JOIN user_address ON users.UserID = user_address.UserID WHERE users.UserID = ? ");
                   $query->execute([$id]);
                   return $query->fetch();
 
@@ -88,32 +88,38 @@ return  $con->query($query)->fetch();
                 return [];
               }
           }
-                function updateUser($user_id, $firstname, $lastname, $birthday, $sex, $Username, $Pass_word){
-                 try{
-                       $con = $this->opencon();
-                       $query = $con->beginTransaction();
-                       $query = $con->prepare("UPDATE users SET firstname=?, lastname=?, birthday=?, sex?, username=?, user_pass=?, WHERE UserID=? ");
-
-                       $query->execute([$firstname, $lastname,$birthday, $sex, $Username, $Pass_word, $user_id]);
-                       $con->commit();
-                }    catch (PDOException $e){
-                    $con->rollBack();
-                    return false;  
-                }
-              } 
-              function updateUserAddress($user_id, $street, $barangay, $city, $province,){
-                try{
-                      $con = $this->opencon();
-                      $query = $con->beginTransaction();
-                      $query = $con->prepare("UPDATE user_address=? SET user_street=?, user_barangay=?, user_province=?,WHERE UserID=? ");
-
-                      $query->execute([$user_id, $street,$barangay, $city, $province]);
-                      $con->commit();
-               }    catch (PDOException $e){
+          
+          function updateUser($user_id, $firstname, $lastname, $birthday,$sex, $username, $password) {
+              try {
+                  $con = $this->opencon();
+                  $con->beginTransaction();
+                  $query = $con->prepare("UPDATE users SET firstname=?, lastname=?,birthday=?, sex=?,Username=?, Pass_word=? WHERE UserID=?");
+                  $query->execute([$firstname, $lastname,$birthday,$sex,$username, $password, $user_id]);
+                  // Update successful
+                  $con->commit();
+                  return true;
+              } catch (PDOException $e) {
+                  // Handle the exception (e.g., log error, return false, etc.)
                    $con->rollBack();
-                   return false;  
-
-}
-}
-}
-    
+                  return false; // Update failed
+              }
+          }
+          
+          function updateUserAddress($user_id, $street, $barangay, $city, $province) {
+              try {
+                  $con = $this->opencon();
+                  $con->beginTransaction();
+                  $query = $con->prepare("UPDATE user_address SET user_add_street=?, user_add_barangay=?, user_add_city=?, user_add_province=? WHERE UserID=?");
+                  $query->execute([$street, $barangay, $city, $province, $user_id]);
+                  $con->commit();
+                  return true; // Update successful
+              } catch (PDOException $e) {
+                  // Handle the exception (e.g., log error, return false, etc.)
+                  $con->rollBack();
+                  return false; // Update failed
+              }
+               
+          }
+        }
+      
+          ?>
