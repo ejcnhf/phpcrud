@@ -5,26 +5,20 @@ session_start();
 if (isset($_SESSION['username'])) {
   header('location:index.php');
   }
+
   
-
-
-
-
-if(isset($_POST['login'])) {
-$username=$_POST['username'];
-$password=$_POST['password'];
-$result=$con->check($username, $password);
-if ($result){
-    if ($result['Username'] == $_POST['username'] && $result['Pass_word'] == $_POST['password']){
-        $_SESSION['username']=$result['Username'];
+  if (isset($_POST['login'])) {
+    $username = $_POST['Username'];
+    $password = $_POST['Pass_word'];
+    $result = $con->check($username, $password);
+  
+    if ($result) {
+        $_SESSION['username'] = $result['Username'];
         header('location:index.php');
-    }else {
-      echo "error";
-
+    } else {
+        $error = "Incorrect username or password. Please try again.";
+    }
   }
-}
-else {echo "error";}
-}  
 ?>
 
 
@@ -58,11 +52,11 @@ else {echo "error";}
 <form method="post">
     <div class="form-group">
       <label for="username">Username:</label>
-      <input type="text" class="form-control" name="username" placeholder="Enter username">
+      <input type="text" class="form-control" name="Username" placeholder="Enter username">
     </div>
     <div class="form-group">
       <label for="password">Password:</label>
-      <input type="password" class="form-control" name="password" placeholder="Enter password">
+      <input type="password" class="form-control" name="Pass_word" placeholder="Enter password">
     </div>
 
     <div class="container"><div class="row gx 1"><div class="col"><input type="submit" name="login" class="btn btn-warning btn-block" value="Login"></input></div>
