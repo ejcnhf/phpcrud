@@ -117,7 +117,7 @@ function check($username, $password) {
                 
                   $con = $this->opencon();
                   $query = $con->prepare("SELECT users.UserID, users.firstname, users.lastname, users.birthday, users.sex, 
-                  users.Username, users.Pass_word,user_address.user_add_street,
+                  users.Username, users.Pass_word, users.user_profile_picture, user_address.user_add_street,
                    user_address.user_add_barangay, user_address.user_add_city, user_address.user_add_province 
                    FROM users INNER JOIN user_address ON users.UserID = user_address.UserID WHERE users.UserID = ? ");
                   $query->execute([$id]);
@@ -159,6 +159,25 @@ function check($username, $password) {
               }
                
           }
+          function validateCurrentPassword($userId, $currentPassword) {
+            // Open database connection
+            $con = $this->opencon();
         
+            // Prepare the SQL query
+            $query = $con->prepare("SELECT Pass_word FROM users WHERE UserID = ?");
+            $query->execute([$userId]);
+        
+            // Fetch the user data as an associative array
+            $user = $query->fetch(PDO::FETCH_ASSOC);
+        
+            // If a user is found, verify the password
+            if ($user && password_verify($currentPassword, $user['Pass_word'])) {
+                return true;
+            }
+        
+            // If no user is found or password is incorrect, return false
+            return false;
         }
-         ?>
+
+        }
+         

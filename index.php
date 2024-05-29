@@ -11,7 +11,7 @@ header('location:login.php');
 if (isset($_POST['delete'])) {
    $id = $_POST['id'];
   if ($con->delete($id)) {
-    header('location:index.php');
+    header('location:index.php?status=success');
   } else {
     echo "Something went wrong.";
   }
@@ -30,6 +30,7 @@ if (isset($_POST['delete'])) {
   <!-- For Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="./includes/style.css">
+<link rel="stylesheet" href="package/dist/sweetalert2.css">
 </head>
 <body>
 
@@ -199,6 +200,41 @@ window.onload = function() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <!-- For Charts -->
 <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+<script src="package/dist/sweetalert2.js"></script>
 
+
+<!-- Pop Up Messages after a succesful transaction starts here --> <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+
+  if (status) {
+    let title, text, icon;
+    switch (status) {
+      case 'success':
+        title = 'Success!';
+        text = 'Record is successfully deleted.';
+        icon = 'success';
+        break;
+      case 'error':
+        title = 'Error!';
+        text = 'Something went wrong.';
+        icon = 'error';
+        break;
+      default:
+        return;
+    }
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: icon
+    }).then(() => {
+      // Remove the status parameter from the URL
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState(null, null, newUrl);
+    });
+  }
+});
+</script> <!-- Pop Up Messages after a succesful transaction ends here -->
 </body>
 </html>
